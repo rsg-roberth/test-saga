@@ -30,6 +30,10 @@ namespace API.OtherSolutions.CCEARc.Saga
         public Task Handle(GetedRelationTheContractsForAjusteThePriceForUpdateFinanceIndexIntegrationEvent message)
         {
             Data.ContratcToReajust = message.Contracts.ToList();
+            if (!Data.ContratcToReajust.Any())
+            {
+                MarkAsComplete();
+            }
             return Task.CompletedTask;
         }
 

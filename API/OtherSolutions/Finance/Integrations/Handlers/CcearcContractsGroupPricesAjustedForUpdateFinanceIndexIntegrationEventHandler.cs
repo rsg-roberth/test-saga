@@ -8,7 +8,7 @@ namespace API.OtherSolutions.Finance.Integrations.Handlers
         public Task Handle(CcearcContractsGroupPricesAjustedForUpdateFinanceIndexIntegrationEvent message)
         {
             var contracts = message.Contracts;
-            //Todo: ajustar o contrato no Financeiro
+            //Todo: ajustar o contrato pedido/fatura/pagamentos no Financeiro
             return Task.CompletedTask;
         }
     }
