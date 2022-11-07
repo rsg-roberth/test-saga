@@ -3,9 +3,9 @@ using Rebus.Handlers;
 
 namespace API.OtherSolutions.Finance.Integrations.Handlers
 {
-    public class GroupCcearcContractsReajustedIntegrationEventHandler : IHandleMessages<GroupCcearcContractsReajustedIntegrationEvent>
+    public class CcearcContractsGroupPricesAjustedForUpdateFinanceIndexIntegrationEventHandler : IHandleMessages<CcearcContractsGroupPricesAjustedForUpdateFinanceIndexIntegrationEvent>
     {
-        public Task Handle(GroupCcearcContractsReajustedIntegrationEvent message)
+        public Task Handle(CcearcContractsGroupPricesAjustedForUpdateFinanceIndexIntegrationEvent message)
         {
             var contracts = message.Contracts;
             //Todo: ajustar o contrato no Financeiro

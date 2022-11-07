@@ -1,8 +1,8 @@
 ﻿namespace API.OtherSolutions.CCEARc.Internal.Commands
 {
-    public class GroupCcearcContractsInternalCommand
+    public class GroupContractsForFinanceIndexUpdateInternalCommand
     {
-        public GroupCcearcContractsInternalCommand(List<string> contracts)
+        public GroupContractsForFinanceIndexUpdateInternalCommand(List<string> contracts)
         {
             Contracts = contracts;
         }

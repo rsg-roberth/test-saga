@@ -1,8 +1,8 @@
 ﻿namespace API.OtherSolutions.CCEARc.Integrations.Events
 {
-    public class CcearcContractReajustedIntegrationEvent
+    public class CcearcContractPriceAjustedForUpdateFinanceIndexIntegrationEvent
     {
-        public CcearcContractReajustedIntegrationEvent(string contract)
+        public CcearcContractPriceAjustedForUpdateFinanceIndexIntegrationEvent(string contract)
         {
             Contract = contract;
         }

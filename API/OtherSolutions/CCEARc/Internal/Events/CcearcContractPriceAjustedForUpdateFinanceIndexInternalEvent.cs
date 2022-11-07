@@ -1,8 +1,8 @@
 ﻿namespace API.OtherSolutions.CCEARc.Internal.Events
 {
-    public class CcearcContractReajustedForIndexInternalEvent
+    public class CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent
     {
-        public CcearcContractReajustedForIndexInternalEvent(string sagaId, string contractId)
+        public CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent(string sagaId, string contractId)
         {
             SagaId = sagaId;
             ContractId = contractId;

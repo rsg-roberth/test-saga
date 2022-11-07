@@ -1,8 +1,8 @@
 ﻿namespace API.OtherSolutions.EnergyBalance.Integrations.Commands
 {
-    public class PriceCcearcReajustedIntegrationCommand
+    public class AjustCcearcContractPriceForUpdateFinanceIndexIntegrationCommand
     {
-        public PriceCcearcReajustedIntegrationCommand(string sagaId, string contractId)
+        public AjustCcearcContractPriceForUpdateFinanceIndexIntegrationCommand(string sagaId, string contractId)
         {
             SagaId = sagaId;
             ContractId = contractId;

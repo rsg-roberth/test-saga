@@ -12,7 +12,7 @@ namespace API.OtherSolutions.CCEARc.Saga
             Saga<FinancialIndexUpdateSagaData>,
             IAmInitiatedBy<StartSagaForAjusteContractPriceForUpdateFinanceIndexInternalCommand>,
             IHandleMessages<GetedRelationTheContractsForAjusteThePriceForUpdateFinanceIndexIntegrationEvent>,
-            IHandleMessages<CcearcContractReajustedForIndexInternalEvent>        
+            IHandleMessages<CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent>        
     {
         private readonly IBus _bus;
 
@@ -33,12 +33,12 @@ namespace API.OtherSolutions.CCEARc.Saga
             return Task.CompletedTask;
         }
 
-        public Task Handle(CcearcContractReajustedForIndexInternalEvent message)
+        public Task Handle(CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent message)
         {            
             Data.ReajustedContracts.Add(message.ContractId);
             if (Data.IsDone())
             {
-                _bus.Publish(new GroupCcearcContractsInternalCommand(Data.ReajustedContracts));
+                _bus.Publish(new GroupContractsForFinanceIndexUpdateInternalCommand(Data.ReajustedContracts));
                 MarkAsComplete();
             }
             return Task.CompletedTask;
@@ -48,7 +48,7 @@ namespace API.OtherSolutions.CCEARc.Saga
         {
             config.Correlate<StartSagaForAjusteContractPriceForUpdateFinanceIndexInternalCommand>(message => message.SagaId, d => d.CorrelationId);
             config.Correlate<GetedRelationTheContractsForAjusteThePriceForUpdateFinanceIndexIntegrationEvent>(message => message.SagaId, d => d.CorrelationId);
-            config.Correlate<CcearcContractReajustedForIndexInternalEvent>(message => message.SagaId, d => d.CorrelationId);
+            config.Correlate<CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent>(message => message.SagaId, d => d.CorrelationId);
         }
     }
 }

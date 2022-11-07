@@ -17,7 +17,7 @@ namespace API.OtherSolutions.EnergyBalance.Internal.Handlers
         public Task Handle(CalculatePriceOperationsCcearcInternalCommand message)
         {
             //Todo: implementar o calculo
-            _bus.Publish(new PriceCcearcReajustedIntegrationCommand(message.SagaId, message.ContractId));
+            _bus.Publish(new AjustCcearcContractPriceForUpdateFinanceIndexIntegrationCommand(message.SagaId, message.ContractId));
             return Task.CompletedTask;
 
         }
