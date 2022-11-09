@@ -2,6 +2,7 @@
 using API.OtherSolutions.CCEARc.Internal.Commands;
 using API.OtherSolutions.CCEARc.Internal.Events;
 using API.OtherSolutions.EnergyBalance.Integrations.Events;
+using Rebus.Messages;
 using Rebus.Bus;
 using Rebus.Handlers;
 using Rebus.Sagas;
@@ -29,7 +30,7 @@ namespace API.OtherSolutions.CCEARc.Saga
 
         public Task Handle(GetedRelationTheContractsForAjusteThePriceForUpdateFinanceIndexIntegrationEvent message)
         {
-            Data.ContratcToReajust = message.Contracts.ToList();
+            Data.ContratcToReajust = message.Contracts;
             if (!Data.ContratcToReajust.Any())
             {
                 MarkAsComplete();
@@ -50,9 +51,13 @@ namespace API.OtherSolutions.CCEARc.Saga
 
         protected override void CorrelateMessages(ICorrelationConfig<FinancialIndexUpdateSagaData> config)
         {
-            config.Correlate<StartSagaForAjusteContractPriceForUpdateFinanceIndexInternalCommand>(message => message.SagaId, d => d.CorrelationId);
-            config.Correlate<GetedRelationTheContractsForAjusteThePriceForUpdateFinanceIndexIntegrationEvent>(message => message.SagaId, d => d.CorrelationId);
-            config.Correlate<CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent>(message => message.SagaId, d => d.CorrelationId);
+            //config.Correlate<StartSagaForAjusteContractPriceForUpdateFinanceIndexInternalCommand>(message => message.SagaId, d => d.CorrelationId);
+            //config.Correlate<GetedRelationTheContractsForAjusteThePriceForUpdateFinanceIndexIntegrationEvent>(message => message.SagaId, d => d.CorrelationId);
+            //config.Correlate<CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent>(message => message.SagaId, d => d.CorrelationId);
+
+            config.CorrelateHeader<StartSagaForAjusteContractPriceForUpdateFinanceIndexInternalCommand>(Headers.CorrelationId, d => d.CorrelationId);
+            config.CorrelateHeader<GetedRelationTheContractsForAjusteThePriceForUpdateFinanceIndexIntegrationEvent>(Headers.CorrelationId, d => d.CorrelationId);
+            config.CorrelateHeader<CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent>(Headers.CorrelationId, d => d.CorrelationId);            
         }
     }
 }
