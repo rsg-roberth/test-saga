@@ -1,19 +1,19 @@
-﻿using API.OtherSolutions.CCEARc.IntegrationsCommands;
-using API.OtherSolutions.CCEARc.InternalCommands;
-using API.OtherSolutions.CCEARc.InternalEvents;
-using API.OtherSolutions.EnergyBalance.IntegrationsCommands;
+﻿using API.OtherSolutions.CCEARc.Integrations.Commands;
+using API.OtherSolutions.CCEARc.Internal.Commands;
+using API.OtherSolutions.CCEARc.Internal.Events;
+using API.OtherSolutions.EnergyBalance.Integrations.Events;
+using Rebus.Messages;
 using Rebus.Bus;
 using Rebus.Handlers;
-using Rebus.Messages;
 using Rebus.Sagas;
 
 namespace API.OtherSolutions.CCEARc.Saga
 {
     public class FinancialIndexUpdatedSaga :
             Saga<FinancialIndexUpdateSagaData>,
-            IAmInitiatedBy<FinancialIndexValuesChangedInternalCommand>,
-            IHandleMessages<CcearcContractForReajustmentCommandIntegration>,
-            IHandleMessages<CcearcContractReajustedForIndexInternalEvent>        
+            IAmInitiatedBy<StartSagaForAjusteContractPriceForUpdateFinanceIndexInternalCommand>,
+            IHandleMessages<GetedRelationTheContractsForAjusteThePriceForUpdateFinanceIndexIntegrationEvent>,
+            IHandleMessages<CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent>        
     {
         private readonly IBus _bus;
 
@@ -22,24 +22,28 @@ namespace API.OtherSolutions.CCEARc.Saga
             _bus = bus;
         }
 
-        public Task Handle(FinancialIndexValuesChangedInternalCommand message)
+        public Task Handle(StartSagaForAjusteContractPriceForUpdateFinanceIndexInternalCommand message)
         {
-            _bus.Publish(new CalculateCcearcContractsForIndexReadjustmentCommandIntegration(message.SagaId));
+            _bus.Publish(new CalculateTheCcearcContractsAjustedPriceForUpdateFinanceIndexCommandIntegration(message.SagaId));
             return Task.CompletedTask;
         }
 
-        public Task Handle(CcearcContractForReajustmentCommandIntegration message)
+        public Task Handle(GetedRelationTheContractsForAjusteThePriceForUpdateFinanceIndexIntegrationEvent message)
         {
-            Data.ContratcToReajust = message.Contracts.ToList();
+            Data.ContratcToReajust = message.Contracts;
+            if (!Data.ContratcToReajust.Any())
+            {
+                MarkAsComplete();
+            }
             return Task.CompletedTask;
         }
 
-        public Task Handle(CcearcContractReajustedForIndexInternalEvent message)
+        public Task Handle(CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent message)
         {            
             Data.ReajustedContracts.Add(message.ContractId);
             if (Data.IsDone())
             {
-                _bus.Publish(new GroupCcearcContractsInternalCommand(Data.ReajustedContracts));
+                _bus.Publish(new GroupContractsForFinanceIndexUpdateInternalCommand(Data.ReajustedContracts));
                 MarkAsComplete();
             }
             return Task.CompletedTask;
@@ -47,9 +51,13 @@ namespace API.OtherSolutions.CCEARc.Saga
 
         protected override void CorrelateMessages(ICorrelationConfig<FinancialIndexUpdateSagaData> config)
         {
-            config.Correlate<FinancialIndexValuesChangedInternalCommand>(message => message.SagaId, d => d.CorrelationId);
-            config.Correlate<CcearcContractForReajustmentCommandIntegration>(message => message.SagaId, d => d.CorrelationId);
-            config.Correlate<CcearcContractReajustedForIndexInternalEvent>(message => message.SagaId, d => d.CorrelationId);
+            //config.Correlate<StartSagaForAjusteContractPriceForUpdateFinanceIndexInternalCommand>(message => message.SagaId, d => d.CorrelationId);
+            //config.Correlate<GetedRelationTheContractsForAjusteThePriceForUpdateFinanceIndexIntegrationEvent>(message => message.SagaId, d => d.CorrelationId);
+            //config.Correlate<CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent>(message => message.SagaId, d => d.CorrelationId);
+
+            config.CorrelateHeader<StartSagaForAjusteContractPriceForUpdateFinanceIndexInternalCommand>(Headers.CorrelationId, d => d.CorrelationId);
+            config.CorrelateHeader<GetedRelationTheContractsForAjusteThePriceForUpdateFinanceIndexIntegrationEvent>(Headers.CorrelationId, d => d.CorrelationId);
+            config.CorrelateHeader<CcearcContractPriceAjustedForUpdateFinanceIndexInternalEvent>(Headers.CorrelationId, d => d.CorrelationId);            
         }
     }
 }
